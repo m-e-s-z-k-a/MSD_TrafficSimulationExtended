@@ -31,7 +31,7 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
         {
             for (int y = 0; y< points[x].length; ++y)
             {
-                if (x == points.length-1)
+               if (x == points.length-1)
                 {
                     points[x][y].setNext(points[0][y]);
                 }
@@ -107,7 +107,7 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
                 {
                 g.setColor(new Color(0, 0, 0, 0.7F));
                 }
-                else if (points[x][y].getType() == 1)
+                else if (points[x][y].getType() == 0)
                 {
                     g.setColor(new Color(1, 1, 1, 0.7F));
                 }
