@@ -110,171 +110,34 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 
     public boolean backConditionsMet(int x, int y)
     {
-        if (y != 2)
+        if (y == 2)
+        {
+            boolean cond1 = points[x][y].distance_prev_right >= points[x][y].getMaxSpeed();
+            boolean cond2 = points[x][y].distance_prev_left <= points[x][y].getMaxSpeed();
+            boolean cond3 = points[x][y].distance_next_right >= points[x][y].getSpeed();
+            return cond1 && cond2 && cond3;
+        }
+        else
         {
             return false;
         }
-        int a;
-        int b = y;
-        //condition 1
-        a = x - 1;
-        b = y + 1;
-        if (a <= -1)
-        {
-            a = points.length-1;
-        }
-        right_back_dist = 0;
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a -= 1;
-            right_back_dist += 1;
-            if (a <= -1)
-            {
-                a = points.length-1;
-            }
-        }
-        if (right_back_dist < points[x][y].getMaxSpeed())
-        {
-            return false;
-        }
-        // condition 2
-        b = y;
-        a = x-1;
-        if (a <= -1)
-        {
-            a = points.length-1;
-        }
-        left_back_dist = 0;
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a -= 1;
-            left_back_dist += 1;
-            if (a <= -1)
-            {
-                a = points.length-1;
-            }
-        }
-        if (left_back_dist > points[x][y].getMaxSpeed())
-        {
-            return false;
-        }
-        //condition 3
-        a = x+1;
-        b = y + 1;
-        if (a >= points.length)
-        {
-            a = 0;
-        }
-        left_front_dist = 0;
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a += 1;
-            left_front_dist += 1;
-            if (a >= points.length)
-            {
-                a = 0;
-            }
-        }
-        if (left_front_dist < points[x][y].getSpeed())
-        {
-            return false;
-        }
-        return true;
-
     }
 
 
     public boolean bypassingConditionsMet(int x, int y)
     {
-        if (y != 3)
+        if (y == 3)
+        {
+        boolean cond1 = points[(x+(points[x][y].distance_next_right)+1)%points.length][y].getSpeed() < points[x][y].getMaxSpeed();
+        boolean cond2 = points[x][y].distance_prev_left >= points[x][y].getMaxSpeed();
+        boolean cond3 = points[x][y].distance_prev_right >= points[x][y].getMaxSpeed();
+        boolean cond4 = points[x][y].distance_next_left >= points[x][y].getSpeed();
+        return cond1 && cond2 && cond3 && cond4;
+        }
+        else
         {
             return false;
         }
-        int a = x+1;
-        int b = y;
-        right_front_dist = 0;
-        if (a >= points.length)
-        {
-            a = 0;
-        }
-        //condition 1
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a += 1;
-            right_front_dist += 1;
-            if (a >= points.length)
-            {
-                a = 0;
-            }
-        }
-        points[x][y].setDist(right_front_dist);
-        if (a == x || points[a][y].getSpeed() >= points[x][y].getMaxSpeed())
-        {
-            return false;
-        }
-        //condition 2
-        a = x - 1;
-        if (a <= -1)
-        {
-            a = points.length-1;
-        }
-        right_back_dist = 0;
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a -= 1;
-            right_back_dist += 1;
-            if (a <= -1)
-            {
-                a = points.length-1;
-            }
-        }
-        if (right_back_dist < points[x][y].getMaxSpeed())
-        {
-            return false;
-        }
-        // condition 3
-        b = y-1;
-        a = x-1;
-        left_back_dist = 0;
-        if (a <= -1)
-        {
-            a = points.length-1;
-        }
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a -= 1;
-            left_back_dist += 1;
-            if (a <= -1)
-            {
-                a = points.length-1;
-            }
-        }
-        if (left_back_dist < points[x][y].getMaxSpeed())
-        {
-            return false;
-        }
-        //condition 4
-        a = x+1;
-        if (a >= points.length)
-        {
-            a = 0;
-        }
-        left_front_dist = 0;
-        while (a != x && points[a][b].type != 1 && points[a][b].type != 2 && points[a][b].type != 3)
-        {
-            a += 1;
-            left_front_dist += 1;
-            if (a >= points.length)
-            {
-                a = 0;
-            }
-        }
-        if (left_front_dist < points[x][y].getSpeed())
-        {
-            return false;
-        }
-        return true;
-
     }
 
 
@@ -328,6 +191,15 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
             {
                 if (points[x][y].getType() == 1 || points[x][y].getType() == 2 || points[x][y].getType() == 3)
                 {
+                    calculateDistances(x, y);
+                }
+            }}
+
+        for (int x = 0; x < points.length; ++x) {
+            for (int y = 0; y < points[x].length; ++y)
+            {
+                if (points[x][y].getType() == 1 || points[x][y].getType() == 2 || points[x][y].getType() == 3)
+                {
                     int new_x_coord = x + points[x][y].getSpeed();
                     if (new_x_coord >= points.length)
                     {
@@ -337,15 +209,15 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
                     {
                         new_x_coord = points.length - 1;
                     }
-                   /* if (backConditionsMet(x, y))
+                    if (backConditionsMet(x, y))
                     {
                         points[x][y].setNewPosition(points[new_x_coord][y+1]);
-                    }*/
-                    /*if (bypassingConditionsMet(x, y))
+                    }
+                    else if (bypassingConditionsMet(x, y))
                     {
                         points[x][y].setNewPosition(points[new_x_coord][y-1]);
-                    }*/
-
+                    }
+                    else
                     {
                         points[x][y].setNewPosition(points[new_x_coord][y]);
                     }

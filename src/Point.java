@@ -32,9 +32,13 @@ public class Point {
             {
                     this.speed ++;
             }
-            if (this.speed >= this.distance_next_left)
+            if (this.lane == 0 && this.speed >= this.distance_next_left)
             {
                 this.speed = this.distance_next_left - 1;
+            }
+            else if (this.lane == 1 && this.speed >= this.distance_next_right)
+            {
+                this.speed = this.distance_next_right - 1;
             }
             if (!this.newPosition.equals(this))
             {
@@ -105,10 +109,7 @@ public class Point {
         this.newPosition = a;
     }
 
-    public void setDist(int dist)
-    {
-        this.distance_next = dist;
-    }
+
 
     public int getSpeed()
     {
