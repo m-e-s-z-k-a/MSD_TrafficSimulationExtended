@@ -2,10 +2,19 @@ import java.util.Random;
 
 public class Point {
 
-    private int type;
+    public int type;
     private Point next;
+    private Point previous;
     private boolean moved;
     private int speed;
+    private int maxSpeed;
+    private Point newPosition;
+    public int lane;
+    public int distance_next_left;
+    public int distance_next_right;
+    public int distance_prev_left;
+    public int distance_prev_right;
+    public static Integer[] types = {0, 1, 2, 3, 5};
     private final static double p = 0.2;
     private final static Random random = new Random();
 
@@ -17,36 +26,25 @@ public class Point {
 
     public void move() {
 
-        if (this.type ==1 && this.moved == false)
+        if ((this.type ==1 || this.type == 2 || this.type == 3) && !this.moved && this.newPosition != null && this.newPosition.type == 0)
         {
             if (this.speed < 5)
             {
-                if (this.speed > 1 && random.nextInt((int) (1 / p)) == 1)
-                {
-                this.speed --;
-                }
-                else
-                {
                     this.speed ++;
-                }
             }
-            Point current = this;
-            for (int i = speed-1; i >= 0; i--)
+            if (this.speed >= this.distance_next_left)
             {
-                if (current.next.type == 1)
-                {
-                    this.speed = i;
-                    break;
-                }
-                current = current.next;
+                this.speed = this.distance_next_left - 1;
             }
-            this.type = 0;
+            if (!this.newPosition.equals(this))
+            {
+                this.newPosition.type = this.type;
+                this.type = 0;
+                this.newPosition.speed = this.speed;
+                this.speed = 0;
+                this.newPosition.moved = true;
+            }
             this.moved = true;
-            current.type = 1;
-            current.moved = true;
-            current.speed = this.speed;
-            this.speed = 0;
-
         }
     }
 
@@ -60,12 +58,62 @@ public class Point {
         this.next = point;
     }
 
+    public void setPrevious(Point point)
+    {
+        this.previous = point;
+    }
+
     public void clicked() {
-        this.type = 1;
+        this.type = 0;
     }
 
     public void clear() {
         this.type = 0;
     }
+
+    public void setType(int type)
+    {
+        this.type = type;
+    }
+
+    public void setMaxSpeed()
+    {
+        if (this.type == 1)
+        {
+            this.maxSpeed = 3;
+            this.speed = this.maxSpeed;
+        }
+        else if (this.type == 2)
+        {
+            this.maxSpeed = 5;
+            this.speed = this.maxSpeed;
+        }
+        else if (this.type == 3)
+        {
+            this.maxSpeed = 7;
+            this.speed = this.maxSpeed;
+        }
+    }
+
+    public int getMaxSpeed()
+    {
+        return this.maxSpeed;
+    }
+
+    public void setNewPosition(Point a)
+    {
+        this.newPosition = a;
+    }
+
+    public void setDist(int dist)
+    {
+        this.distance_next = dist;
+    }
+
+    public int getSpeed()
+    {
+        return this.speed;
+    }
+
 }
 
