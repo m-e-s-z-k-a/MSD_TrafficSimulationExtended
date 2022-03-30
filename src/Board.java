@@ -10,10 +10,6 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
     private Point[][] points = new Point[][]{};
     private int size = 25;
     public int editType = 0;
-    private int left_back_dist;
-    private int right_front_dist;
-    private int left_front_dist;
-    private int right_back_dist;
 
 
     public Board(int length, int height) {
@@ -27,8 +23,16 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
 
     public void calculateDistances(int x, int y)
     {
-        int a, b;
         //0 - lewy pas, 1 - prawy
+        if (y == 2)
+        {
+            points[x][y].lane = 0;
+        }
+        if (y == 3)
+        {
+            points[x][y].lane = 1;
+        }
+        int a, b;
         if (points[x][y].lane == 0)
         {
             a = x+1;
@@ -40,7 +44,6 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
             b = y -1;
         }
         int dist = 0;
-        a = x+1;
         if (a >= points.length)
         {
             a = 0;
@@ -128,7 +131,7 @@ public class Board extends JComponent implements MouseInputListener, ComponentLi
     {
         if (y == 3)
         {
-        boolean cond1 = points[(x+(points[x][y].distance_next_right)+1)%points.length][y].getSpeed() < points[x][y].getMaxSpeed();
+        boolean cond1 = points[x][y].getSpeed() < points[x][y].getMaxSpeed();
         boolean cond2 = points[x][y].distance_prev_left >= points[x][y].getMaxSpeed();
         boolean cond3 = points[x][y].distance_prev_right >= points[x][y].getMaxSpeed();
         boolean cond4 = points[x][y].distance_next_left >= points[x][y].getSpeed();
